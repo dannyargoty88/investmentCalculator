@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Calculator</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="alternate icon" href="assets/favicon.svg">
+    <link rel="mask-icon" href="assets/favicon.svg" color="#1e293b">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>    
+</head>
+<body>
+    <div class="grid-container">
+        <!-- Header -->
+        <div class="item-1">
+            <div class="header-content">
+                <h1><i class="fas fa-calculator"></i> Calculadora de Inversiones</h1>
+                <div class="header-right">
+                    <div class="header-info">
+                        <span id="datetime"></span>
+                        <i class="fas fa-user-circle user-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Inversión -->
+        <div class="item-2">
+            <div class="form-header">
+                <h3><i class="fas fa-chart-line"></i> Calculadora de Inversión</h3>
+                <div class="form-actions">
+                    <button class="option-btn-tiny" onclick="openModal('modal4x1000')" title="Calculadora 4x1000">
+                        <i class="fas fa-percentage"></i>
+                    </button>
+                    <button class="option-btn-tiny" onclick="openModal('modalFechas')" title="Calculadora de Fechas">
+                        <i class="fas fa-calendar-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="inversionForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="entidad">Entidad Financiera:</label>
+                        <select id="entidad" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Bancolombia">Bancolombia</option>
+                            <option value="NU">NU</option>
+                            <option value="Bold">Bold</option>
+                            <option value="Nequi">Nequi</option>
+                            <option value="LuloBank">LuloBank</option>
+                            <option value="Uala">Uala</option>
+                            <option value="Revolut">Revolut</option>
+                            <option value="Otra">Otra</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="valorInvertir">Valor a Invertir:</label>
+                        <input type="text" id="valorInvertir" inputmode="numeric" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tasaEfectiva">Tasa Efectiva (E.A.):</label>
+                        <input type="number" id="tasaEfectiva" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="plazoDias">Plazo en Días:</label>
+                        <input type="number" id="plazoDias" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reteFuente">ReteFuente (%):</label>
+                        <input type="number" id="reteFuente" value="4" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="aplica4x1000">Aplica 4x1000:</label>
+                        <select id="aplica4x1000">
+                            <option value="si">SI</option>
+                            <option value="no">NO</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-calculate"><i class="fas fa-calculator"></i> Calcular</button>
+            </form>
+        </div>
+
+        <!-- Formulario 4x1000 -->
+        <div class="item-3">
+            <h3><i class="fas fa-percentage"></i> Calculadora 4x1000</h3>
+            <form id="cuatroMilForm">
+                <div class="form-group">
+                    <label for="valor4x1000">Valor:</label>
+                    <input type="text" id="valor4x1000" inputmode="numeric" placeholder="0" required>
+                </div>
+                <button type="submit" class="btn-calculate"><i class="fas fa-calculator"></i> Calcular 4x1000</button>
+            </form>
+        </div>
+
+        <!-- Calculadora de Fechas -->
+        <div class="item-4">
+            <h3><i class="fas fa-calendar-plus"></i> Calculadora de Fechas</h3>
+            <form id="fechaForm">
+                <div class="form-group">
+                    <label for="fechaBase">Fecha base:</label>
+                    <input type="date" id="fechaBase" required>
+                </div>
+                <div class="form-group">
+                    <label for="diasSumar">Días a sumar:</label>
+                    <input type="number" id="diasSumar" min="0" required>
+                </div>
+                <div class="result-date">
+                    <strong>Resultado: <span id="fechaResultado">--</span></strong>
+                </div>
+                <button type="submit" class="btn-calculate"><i class="fas fa-save"></i> Guardar Cálculo</button>
+            </form>
+        </div>
+
+        <!-- Tabla de Resultados Inversiones -->
+        <div class="item-5">
+            <div class="results-header">
+                <h3><i class="fas fa-table"></i> Resultados de Inversiones</h3>
+                <div class="header-actions">
+                    <button id="toggleFiltros" class="btn-toggle-filters"><i class="fas fa-filter"></i> Filtros</button>
+                    <button id="clearInversiones" class="btn-clear"><i class="fas fa-trash"></i> Limpiar</button>
+                </div>
+            </div>
+            
+            <!-- Panel de filtros desplegable -->
+            <div id="panelFiltros" class="filter-panel">
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="filtroEntidad">Entidad:</label>
+                        <select id="filtroEntidad">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroTasa">Tasa E.A.:</label>
+                        <select id="filtroTasa">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroValorMin">Valor Min:</label>
+                        <input type="text" id="filtroValorMin" inputmode="numeric" placeholder="0">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroValorMax">Valor Max:</label>
+                        <input type="text" id="filtroValorMax" inputmode="numeric" placeholder="∞">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroDiasMin">Días Min:</label>
+                        <input type="number" id="filtroDiasMin" min="1" placeholder="1">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroDiasMax">Días Max:</label>
+                        <input type="number" id="filtroDiasMax" min="1" placeholder="∞">
+                    </div>
+                    <div class="filter-group">
+                        <button id="limpiarFiltros" class="btn-filter-clear"><i class="fas fa-times"></i> Limpiar Filtros</button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="tablaInversiones">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-type="text">Entidad <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Valor Invertido <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Tasa E.A. <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Días <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Rentabilidad <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">ReteFuente <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Rentab. SubTotal <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">4x1000 <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Rentab. Total <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Valor Final <i class="fas fa-sort sort-icon"></i></th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tabla de Resultados 4x1000 -->
+        <div class="item-6">
+            <div class="results-header">
+                <h3><i class="fas fa-table"></i> Resultados 4x1000</h3>
+                <button id="clear4x1000" class="btn-clear"><i class="fas fa-trash"></i> Limpiar</button>
+            </div>
+            <div class="table-container">
+                <table id="tabla4x1000">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-type="number">Valor <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">4x1000 <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Valor Total <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Valor a Transferir <i class="fas fa-sort sort-icon"></i></th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Historial de Cálculo de Fechas -->
+        <div class="item-7">
+            <div class="results-header">
+                <h3><i class="fas fa-history"></i> Historial de Fechas</h3>
+                <button id="clearFechas" class="btn-clear"><i class="fas fa-trash"></i> Limpiar</button>
+            </div>
+            <div class="table-container">
+                <table id="tablaFechas">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-type="date">Fecha Base <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="number">Días Sumados <i class="fas fa-sort sort-icon"></i></th>
+                            <th class="sortable" data-type="date">Fecha Resultado <i class="fas fa-sort sort-icon"></i></th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Calculadora 4x1000 -->
+    <div id="modal4x1000" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-percentage"></i> Calculadora 4x1000</h3>
+                <span class="close" onclick="closeModal('modal4x1000')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="cuatroMilModalForm">
+                    <div class="form-group">
+                        <label for="valorModal4x1000">Valor:</label>
+                        <input type="text" id="valorModal4x1000" inputmode="numeric" placeholder="0" required>
+                    </div>
+                    <button type="submit" class="btn-calculate"><i class="fas fa-calculator"></i> Calcular 4x1000</button>
+                </form>
+                <div id="resultado4x1000Modal" class="result-modal"></div>
+                
+                <!-- Historial 4x1000 -->
+                <div class="historial-section">
+                    <div class="results-header">
+                        <h3><i class="fas fa-table"></i> Resultados 4x1000</h3>
+                        <button id="clear4x1000Modal" class="btn-clear"><i class="fas fa-trash"></i> Limpiar</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="tabla4x1000Modal">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-type="number">Valor <i class="fas fa-sort sort-icon"></i></th>
+                                    <th class="sortable" data-type="number">4x1000 <i class="fas fa-sort sort-icon"></i></th>
+                                    <th class="sortable" data-type="number">Valor Total <i class="fas fa-sort sort-icon"></i></th>
+                                    <th class="sortable" data-type="number">Valor a Transferir <i class="fas fa-sort sort-icon"></i></th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Calculadora de Fechas -->
+    <div id="modalFechas" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus"></i> Calculadora de Fechas</h3>
+                <span class="close" onclick="closeModal('modalFechas')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="fechaModalForm">
+                    <div class="form-group">
+                        <label for="fechaBaseModal">Fecha base:</label>
+                        <input type="date" id="fechaBaseModal" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="diasSumarModal">Días a sumar:</label>
+                        <input type="number" id="diasSumarModal" min="0" required>
+                    </div>
+                    <div class="result-date">
+                        <strong>Resultado: <span id="fechaResultadoModal">--</span></strong>
+                    </div>
+                    <button type="submit" class="btn-calculate"><i class="fas fa-save"></i> Guardar Cálculo</button>
+                </form>
+                
+                <!-- Historial de Fechas -->
+                <div class="historial-section">
+                    <div class="results-header">
+                        <h3><i class="fas fa-history"></i> Historial de Fechas</h3>
+                        <button id="clearFechasModal" class="btn-clear"><i class="fas fa-trash"></i> Limpiar</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="tablaFechasModal">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-type="date">Fecha Base <i class="fas fa-sort sort-icon"></i></th>
+                                    <th class="sortable" data-type="number">Días Sumados <i class="fas fa-sort sort-icon"></i></th>
+                                    <th class="sortable" data-type="date">Fecha Resultado <i class="fas fa-sort sort-icon"></i></th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
