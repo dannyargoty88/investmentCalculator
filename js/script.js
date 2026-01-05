@@ -85,6 +85,9 @@ class CalculadoraInversiones {
         // Configurar eventos de filtros
         this.configurarEventosFiltros();
 
+        // Configurar toggle de filtros
+        this.configurarToggleFiltros();
+
         // Configurar toggle de formulario
         this.configurarToggleFormulario();
 
