@@ -249,7 +249,9 @@ class CalculadoraInversiones {
         const diasSumar = parseInt(document.getElementById('diasSumar').value) || 0;
 
         if (fechaBase) {
-            const fecha = new Date(fechaBase);
+            // Crear fecha evitando problemas de zona horaria
+            const [year, month, day] = fechaBase.split('-').map(Number);
+            const fecha = new Date(year, month - 1, day); // month-1 porque Date usa 0-11
             fecha.setDate(fecha.getDate() + diasSumar);
             
             const resultado = fecha.toLocaleDateString('es-ES', {
@@ -260,6 +262,12 @@ class CalculadoraInversiones {
             });
             
             document.getElementById('fechaResultado').textContent = resultado;
+            
+            // También actualizar el modal si existe
+            const fechaResultadoModal = document.getElementById('fechaResultadoModal');
+            if (fechaResultadoModal) {
+                fechaResultadoModal.textContent = resultado;
+            }
         }
     }
 
@@ -269,10 +277,19 @@ class CalculadoraInversiones {
         const diasSumar = parseInt(document.getElementById('diasSumar').value) || 0;
 
         if (fechaBase && diasSumar >= 0) {
-            const fecha = new Date(fechaBase);
-            fecha.setDate(fecha.getDate() + diasSumar);
+            // Crear fecha evitando problemas de zona horaria
+            const [year, month, day] = fechaBase.split('-').map(Number);
+            const fechaBaseObj = new Date(year, month - 1, day);
+            const fechaResultadoObj = new Date(year, month - 1, day);
+            fechaResultadoObj.setDate(fechaResultadoObj.getDate() + diasSumar);
             
-            const fechaResultado = fecha.toLocaleDateString('es-ES', {
+            const fechaResultado = fechaResultadoObj.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            const fechaBaseFormateada = fechaBaseObj.toLocaleDateString('es-ES', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric'
@@ -280,7 +297,7 @@ class CalculadoraInversiones {
 
             const calculo = {
                 id: Date.now(),
-                fechaBase: fechaBase,
+                fechaBase: fechaBaseFormateada,
                 diasSumados: diasSumar,
                 fechaResultado: fechaResultado
             };
@@ -396,7 +413,7 @@ class CalculadoraInversiones {
                 <td>$${this.formatearNumero(inversion.cuatroMil || 0, false)}</td>
                 <td class="profit-positive">$${this.formatearNumero(inversion.rentabilidadTotal, false)}</td>
                 <td>$${this.formatearNumero(inversion.valorFinal, false)}</td>
-                <td><button class="btn-delete" onclick="app.eliminarInversion(${inversion.id})">🗑️</button></td>
+                <td><button class="btn-delete" onclick="eliminarInversionGlobal(${inversion.id})">🗑️</button></td>
             `;
             tbody.appendChild(fila);
 
@@ -456,7 +473,7 @@ class CalculadoraInversiones {
                 <td>$${this.formatearNumero(calculo.cuatroMil || 0, false)}</td>
                 <td>$${this.formatearNumero(calculo.valorTotal || 0, false)}</td>
                 <td>$${this.formatearNumero(calculo.valorTransferir || 0, false)}</td>
-                <td><button class="btn-delete" onclick="app.eliminarCalculo4x1000(${calculo.id})">🗑️</button></td>
+                <td><button class="btn-delete" onclick="eliminarCalculo4x1000Global(${calculo.id})">🗑️</button></td>
             `;
             tbody.appendChild(fila);
         });
@@ -473,7 +490,7 @@ class CalculadoraInversiones {
                 <td>${new Date(calculo.fechaBase).toLocaleDateString('es-ES')}</td>
                 <td>${calculo.diasSumados} días</td>
                 <td>${calculo.fechaResultado}</td>
-                <td><button class="btn-delete" onclick="app.eliminarCalculoFecha(${calculo.id})">🗑️</button></td>
+                <td><button class="btn-delete" onclick="eliminarCalculoFechaGlobal(${calculo.id})">🗑️</button></td>
             `;
             tbody.appendChild(fila);
         });
@@ -484,6 +501,7 @@ class CalculadoraInversiones {
         this.calculosFechas = this.calculosFechas.filter(calc => calc.id !== id);
         this.guardarDatos('calculosFechas', this.calculosFechas);
         this.cargarTablaFechas();
+        this.cargarTablaFechasModal(); // Actualizar también tabla modal
     }
 
     // Eliminar inversión
@@ -498,6 +516,7 @@ class CalculadoraInversiones {
         this.calculos4x1000 = this.calculos4x1000.filter(calc => calc.id !== id);
         this.guardarDatos('calculos4x1000', this.calculos4x1000);
         this.cargarTabla4x1000();
+        this.cargarTabla4x1000Modal(); // Actualizar también tabla modal
     }
 
     // Limpiar tabla completa
@@ -839,7 +858,9 @@ class CalculadoraInversiones {
         const diasSumar = parseInt(document.getElementById('diasSumarModal').value) || 0;
 
         if (fechaBase) {
-            const fecha = new Date(fechaBase);
+            // Crear fecha evitando problemas de zona horaria
+            const [year, month, day] = fechaBase.split('-').map(Number);
+            const fecha = new Date(year, month - 1, day); // month-1 porque Date usa 0-11
             fecha.setDate(fecha.getDate() + diasSumar);
             
             const resultado = fecha.toLocaleDateString('es-ES', {
@@ -859,10 +880,19 @@ class CalculadoraInversiones {
         const diasSumar = parseInt(document.getElementById('diasSumarModal').value) || 0;
 
         if (fechaBase && diasSumar >= 0) {
-            const fecha = new Date(fechaBase);
-            fecha.setDate(fecha.getDate() + diasSumar);
+            // Crear fecha evitando problemas de zona horaria
+            const [year, month, day] = fechaBase.split('-').map(Number);
+            const fechaBaseObj = new Date(year, month - 1, day);
+            const fechaResultadoObj = new Date(year, month - 1, day);
+            fechaResultadoObj.setDate(fechaResultadoObj.getDate() + diasSumar);
             
-            const fechaResultado = fecha.toLocaleDateString('es-ES', {
+            const fechaResultado = fechaResultadoObj.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            const fechaBaseFormateada = fechaBaseObj.toLocaleDateString('es-ES', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric'
@@ -870,7 +900,7 @@ class CalculadoraInversiones {
 
             const calculo = {
                 id: Date.now(),
-                fechaBase: fechaBase,
+                fechaBase: fechaBaseFormateada,
                 diasSumados: diasSumar,
                 fechaResultado: fechaResultado
             };
@@ -1015,7 +1045,7 @@ class CalculadoraInversiones {
                 <td>$${this.formatearNumero(calculo.cuatroMil, false)}</td>
                 <td>$${this.formatearNumero(calculo.valorTotal, false)}</td>
                 <td class="profit-positive">$${this.formatearNumero(calculo.valorTransferir, false)}</td>
-                <td><button class="btn-delete" onclick="app.eliminarCalculo4x1000(${calculo.id})">🗑️</button></td>
+                <td><button class="btn-delete" onclick="eliminarCalculo4x1000Global(${calculo.id})">🗑️</button></td>
             `;
             tbody.appendChild(fila);
         });
@@ -1034,7 +1064,7 @@ class CalculadoraInversiones {
                 <td>${calculo.fechaBase}</td>
                 <td>${calculo.diasSumados}</td>
                 <td>${calculo.fechaResultado}</td>
-                <td><button class="btn-delete" onclick="app.eliminarCalculoFecha(${calculo.id})">🗑️</button></td>
+                <td><button class="btn-delete" onclick="eliminarCalculoFechaGlobal(${calculo.id})">🗑️</button></td>
             `;
             tbody.appendChild(fila);
         });
@@ -1104,6 +1134,25 @@ function openModal(modalId) {
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
     document.body.style.overflow = 'auto'; // Restaurar scroll del body
+}
+
+// Funciones globales para borrado individual
+function eliminarCalculo4x1000Global(id) {
+    if (app) {
+        app.eliminarCalculo4x1000(id);
+    }
+}
+
+function eliminarCalculoFechaGlobal(id) {
+    if (app) {
+        app.eliminarCalculoFecha(id);
+    }
+}
+
+function eliminarInversionGlobal(id) {
+    if (app) {
+        app.eliminarInversion(id);
+    }
 }
 
 // Cerrar modal al hacer click fuera de él
