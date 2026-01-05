@@ -85,8 +85,8 @@ class CalculadoraInversiones {
         // Configurar eventos de filtros
         this.configurarEventosFiltros();
 
-        // Configurar toggle de filtros
-        this.configurarToggleFiltros();
+        // Configurar toggle de formulario
+        this.configurarToggleFormulario();
 
         // Establecer fecha actual por defecto
         document.getElementById('fechaBase').value = 
@@ -930,6 +930,34 @@ class CalculadoraInversiones {
                     panelFiltros.classList.add('show');
                     toggleBtn.classList.add('active');
                     toggleBtn.innerHTML = '<i class="fas fa-filter"></i> Ocultar Filtros';
+                }
+            });
+        }
+    }
+
+    // Configurar toggle de formulario
+    configurarToggleFormulario() {
+        const toggleBtn = document.getElementById('toggleFormulario');
+        const formularioContainer = document.getElementById('formularioContainer');
+        const item2 = document.querySelector('.item-2');
+        const gridContainer = document.querySelector('.grid-container');
+        
+        if (toggleBtn && formularioContainer && item2 && gridContainer) {
+            toggleBtn.addEventListener('click', () => {
+                const isCollapsed = formularioContainer.classList.contains('collapsed');
+                
+                if (isCollapsed) {
+                    formularioContainer.classList.remove('collapsed');
+                    toggleBtn.classList.remove('collapsed');
+                    item2.classList.remove('form-collapsed');
+                    gridContainer.classList.remove('form-collapsed');
+                    toggleBtn.title = 'Contraer Formulario';
+                } else {
+                    formularioContainer.classList.add('collapsed');
+                    toggleBtn.classList.add('collapsed');
+                    item2.classList.add('form-collapsed');
+                    gridContainer.classList.add('form-collapsed');
+                    toggleBtn.title = 'Desplegar Formulario';
                 }
             });
         }

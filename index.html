@@ -40,52 +40,57 @@
                     <button class="option-btn-tiny" onclick="openModal('modalFechas')" title="Calculadora de Fechas">
                         <i class="fas fa-calendar-plus"></i>
                     </button>
+                    <button id="toggleFormulario" class="option-btn-tiny" title="Contraer/Desplegar Formulario">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
                 </div>
             </div>
-            <form id="inversionForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="entidad">Entidad Financiera:</label>
-                        <select id="entidad" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="Bancolombia">Bancolombia</option>
-                            <option value="NU">NU</option>
-                            <option value="Bold">Bold</option>
-                            <option value="Nequi">Nequi</option>
-                            <option value="LuloBank">LuloBank</option>
-                            <option value="Uala">Uala</option>
-                            <option value="Revolut">Revolut</option>
-                            <option value="Otra">Otra</option>
-                        </select>
+            <div id="formularioContainer">
+                <form id="inversionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="entidad">Entidad Financiera:</label>
+                            <select id="entidad" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Bancolombia">Bancolombia</option>
+                                <option value="NU">NU</option>
+                                <option value="Bold">Bold</option>
+                                <option value="Nequi">Nequi</option>
+                                <option value="LuloBank">LuloBank</option>
+                                <option value="Uala">Uala</option>
+                                <option value="Revolut">Revolut</option>
+                                <option value="Otra">Otra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="valorInvertir">Valor a Invertir:</label>
+                            <input type="text" id="valorInvertir" inputmode="numeric" placeholder="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tasaEfectiva">Tasa Efectiva (E.A.):</label>
+                            <input type="number" id="tasaEfectiva" step="0.01" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="valorInvertir">Valor a Invertir:</label>
-                        <input type="text" id="valorInvertir" inputmode="numeric" placeholder="0" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="plazoDias">Plazo en Días:</label>
+                            <input type="number" id="plazoDias" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reteFuente">ReteFuente (%):</label>
+                            <input type="number" id="reteFuente" value="4" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="aplica4x1000">Aplica 4x1000:</label>
+                            <select id="aplica4x1000">
+                                <option value="si">SI</option>
+                                <option value="no">NO</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="tasaEfectiva">Tasa Efectiva (E.A.):</label>
-                        <input type="number" id="tasaEfectiva" step="0.01" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="plazoDias">Plazo en Días:</label>
-                        <input type="number" id="plazoDias" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="reteFuente">ReteFuente (%):</label>
-                        <input type="number" id="reteFuente" value="4" step="0.01">
-                    </div>
-                    <div class="form-group">
-                        <label for="aplica4x1000">Aplica 4x1000:</label>
-                        <select id="aplica4x1000">
-                            <option value="si">SI</option>
-                            <option value="no">NO</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn-calculate"><i class="fas fa-calculator"></i> Calcular</button>
-            </form>
+                    <button type="submit" class="btn-calculate"><i class="fas fa-calculator"></i> Calcular</button>
+                </form>
+            </div>
         </div>
 
         <!-- Formulario 4x1000 -->

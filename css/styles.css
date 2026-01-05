@@ -139,6 +139,13 @@ body {
   border: 1px solid var(--border-main);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
+  transition: padding 0.3s ease, min-height 0.3s ease;
+}
+
+.item-2.form-collapsed {
+  grid-row: 2 / span 1;
+  padding: 15px 15px 15px 15px;
+  min-height: auto;
 }
 
 .item-3 {
@@ -177,6 +184,11 @@ body {
   border: 1px solid var(--border-main);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
+  transition: grid-row 0.3s ease;
+}
+
+.grid-container.form-collapsed .item-5 {
+  grid-row: 3 / span 4;
 }
 
 .item-6 {
@@ -259,6 +271,31 @@ h3 {
 
 .option-btn-tiny:active {
   transform: translateY(0);
+}
+
+/* Contenedor del formulario con animación */
+#formularioContainer {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.2s ease, padding 0.3s ease, margin 0.3s ease;
+  max-height: 1000px;
+  opacity: 1;
+}
+
+#formularioContainer.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+/* Animación del icono del botón toggle */
+#toggleFormulario i {
+  transition: transform 0.3s ease;
+}
+
+#toggleFormulario.collapsed i {
+  transform: rotate(180deg);
 }
 
 /* Estilos de formularios */
